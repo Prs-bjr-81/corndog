@@ -26,7 +26,7 @@
     <!-- Header Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-info">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">myApp</a>
+            <a class="navbar-brand" href="#">Parsa Team 23</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -53,7 +53,9 @@
     <div class="container">
         <h1 class="display-4"> Hello, <span id="username">CST!</span> </h1>
         <h1> You are now logged in. </h1>
+        <h1>This is a collection of webcams in Vancouver.</h1>
         <div id="cities-go-here"> </div>
+        <div id="webcams-go-here"></div>
     </div>
 
     <!----------------------------------------------->
@@ -68,7 +70,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
     <!-- Link to the api keys for your firebase project -->
-    <script src="scripts/firebase_api_elmo.js"></script>
+    <script src="scripts/firebase_api_parsa.js"></script>
 
     <!--------------------------------------------------------------------->
     <!-- JS files: Your own JavaScript functions included here    -->
@@ -76,6 +78,33 @@
     <script src="scripts/my_functions.js"></script>
     <script>
         sayHello();
+
+        function displayWebcams() {
+            db.collection("webcams")
+                .where("fields.geo_local_area", "in", ["Downtown", "Oakridge"])
+                .get()
+                .then(function (snapcollection) {
+                    snapcollection.forEach(function (doc) {
+                        //console.log(doc.data());
+                        //console.log(doc.data().fields.name);
+                        var id = doc.id;
+                        var name = doc.data().fields.name;
+                        $("#webcams-go-here").append("<p id='" + id + "'>" + name + "</p>")
+                        addWebcamListener(id);
+                    })
+                })
+
+        }
+        displayWebcams();
+
+        function addWebcamListener(id) {
+            document.getElementById(id)
+                .addEventListener("click", function () {
+                    console.log(id + " was clicked!")
+                    //window.location.href="details.html";
+                      window.location.href = "details.html?id=" + id;
+                });
+        }
     </script>
 
 </body>
